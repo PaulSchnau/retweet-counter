@@ -79,7 +79,6 @@ function displayTweets(){
         topTweetsString +=(i+1) + ". " + orderedTweets[i][0] + " - " + orderedTweets[i][1] + " Retweets \n";
     }
     console.log(topTweetsString);
-    timesincelastprint = new Date();
 }
 
 
