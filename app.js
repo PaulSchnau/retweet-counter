@@ -10,9 +10,12 @@ var T = new Twit({
 });
 
 var minutes; //User inputed minutes
-var tweets = {}; //Object of {tweetid: [time]} where each time represents a retweet.
+var tweetText = {}; //Object of {tweetID: tweetString}
+var tweets = {}; //Object of {tweetID: [time]} where each time represents a retweet.
 var retweetTotals = {}; //Object of {tweetID: numReteweets}
 var orderedTweets = []; //Array of [tweetID, numRetweets]
+var timeOfLastDisplay= new Date();
+var timeToDisplayNext = new Date();
 
 function promptUser(){
     console.log("Count retweets for how long of a time?");
@@ -62,8 +65,10 @@ function tallyTweets(){
 function startStream(){
     var stream = T.stream('statuses/sample', {})
     stream.on('tweet', function (tweet) {
+        tweetText[tweet.id]=tweet.text;
         if (tweet.retweeted_status){
             addRetweet(tweet.retweeted_status.id, new Date(), false);
+            tweetText[tweet.retweeted_status.id]=tweet.retweeted_status.text;
         } else {
             addRetweet(tweet.id, new Date(), true);
         }
@@ -73,12 +78,17 @@ function startStream(){
 }
 
 function displayTweets(){
-    var topTweetsString = "Top Retweets in the last " + minutes + " minutes: \n";
-    for (var i = 0; i < 10; i++) {
-        if (orderedTweets.length < 10) break;
-        topTweetsString +=(i+1) + ". " + orderedTweets[i][0] + " - " + orderedTweets[i][1] + " Retweets \n";
+    if(new Date() > timeToDisplayNext) {
+        var topTweetsString = "Top Retweets in the last " + minutes + " minutes: \n";
+        for (var i = 0; i < 10; i++) {
+            if (orderedTweets.length < 10) break;
+            var tweetMessage =  tweetText[orderedTweets[i][0]].substring(0, 40).replace(/\s+/g," ");
+            topTweetsString +=(i+1) + ". " + orderedTweets[i][1] + " Retweets: "+ tweetMessage + "..\n" ;
+        }
+        timeOfLastDisplay = new Date();
+        timeToDisplayNext = timeOfLastDisplay.setTime(timeOfLastDisplay.getTime() + 1000);
+        console.log(topTweetsString);
     }
-    console.log(topTweetsString);
 }
 
 
