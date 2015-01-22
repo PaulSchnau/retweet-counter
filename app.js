@@ -9,13 +9,13 @@ var T = new Twit({
     , access_token_secret: 'elXVYJRFmFFit3PiVTmI9eU0IvHqqD7H4yeEmClJ8c'
 });
 
-var minutes; // User inputed minutes
-var tweets = {}; //Object of {tweetid: [time]} where each time represetns a retweet.
+var minutes; //User inputed minutes
+var tweets = {}; //Object of {tweetid: [time]} where each time represents a retweet.
 var retweetTotals = {}; //Object of {tweetID: numReteweets}
 var orderedTweets = []; //Array of [tweetID, numRetweets]
 
 function promptUser(){
-    console.log("Count retweets for howlong of a time?");
+    console.log("Count retweets for how long of a time?");
     prompt.start();
     prompt.get(['minutes'], function (err, result) {
         minutes = parseInt(result.minutes);
@@ -73,7 +73,7 @@ function startStream(){
 }
 
 function displayTweets(){
-    var topTweetsString = "Top Retweet tweets in the last " + minutes + " minutes: \n";
+    var topTweetsString = "Top Retweets in the last " + minutes + " minutes: \n";
     for (var i = 0; i < 10; i++) {
         if (orderedTweets.length < 10) break;
         topTweetsString +=(i+1) + ". " + orderedTweets[i][0] + " - " + orderedTweets[i][1] + " Retweets \n";
